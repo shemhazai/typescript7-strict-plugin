@@ -28,7 +28,9 @@ async function getFilesCheckedByTs(): Promise<string[]> {
   const specFilesCheckedByTs = await getFilesFromTSConfigSpec();
   const specFilePaths = specFilesCheckedByTs.split(/\r?\n/).filter(isFile).map(getPosixFilePath);
 
-  return filterOutNodeModulesFiles([...appFilePaths, ...specFilePaths]);
+  // The app and spec programs overlap: any file a spec imports is listed by both.
+  // Deduplicate, otherwise findStrictErrors reports its errors once per listing.
+  return [...new Set(filterOutNodeModulesFiles([...appFilePaths, ...specFilePaths]))];
 }
 
 function getFilesFromTSConfigApp(tsconfigPath = './tsconfig.app.json'): Promise<string> {
