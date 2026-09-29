@@ -30,26 +30,22 @@ files. Therefore, we have strict errors inside our files and during build time.
 
 ## How to install
 
-The package is published as `typescript7-strict-plugin`, but it has to be installed **under the
-`typescript-strict-plugin` alias**. TypeScript resolves language service plugins by module name, and
-the CLI looks itself up under that same name, so the folder in `node_modules` has to match it.
-
 Use `npm`:
 
 ```bash
-npm i --save-dev typescript-strict-plugin@npm:typescript7-strict-plugin
+npm i --save-dev typescript7-strict-plugin
 ```
 
 or yarn
 
 ```bash
-yarn add -D typescript-strict-plugin@npm:typescript7-strict-plugin
+yarn add -D typescript7-strict-plugin
 ```
 
 or pnpm
 
 ```bash
-pnpm add -D typescript-strict-plugin@npm:typescript7-strict-plugin
+pnpm add -D typescript7-strict-plugin
 ```
 
 Either way, your `package.json` ends up with:
@@ -57,13 +53,14 @@ Either way, your `package.json` ends up with:
 ```json
 {
   "devDependencies": {
-    "typescript-strict-plugin": "npm:typescript7-strict-plugin@^1.0.0"
+    "typescript7-strict-plugin": "^1.0.0"
   }
 }
 ```
 
-The alias is what makes this fork a drop-in replacement: a project already using Allegro's plugin
-switches over without touching its `tsconfig.json`.
+TypeScript resolves language service plugins by module name, and the CLI looks itself up under that
+same name. A project migrating from Allegro's plugin therefore has to update the plugin `name` in
+its `tsconfig.json` as well, as shown below.
 
 add plugin to your `tsconfig.json`:
 
@@ -74,7 +71,7 @@ add plugin to your `tsconfig.json`:
    "strict": false,
    "plugins": [
     {
-     "name": "typescript-strict-plugin"
+     "name": "typescript7-strict-plugin"
     }
    ]
  }
@@ -105,7 +102,7 @@ from ignored paths you can insert `//@ts-strict` comment.
     "strict": false,
     "plugins": [
       {
-        "name": "typescript-strict-plugin",
+        "name": "typescript7-strict-plugin",
         "paths": [
           "./src",
           "/absolute/path/to/source/"
