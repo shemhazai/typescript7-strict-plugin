@@ -1,12 +1,14 @@
+import { PLUGIN_NAME } from '../common/constants';
+
 export const notConfiguredError = `
-typescript-strict-plugin isn't configured in tsconfig.json
+${PLUGIN_NAME} isn't configured in tsconfig.json
         
 Please add following configuration:
 {
   "compilerOptions": {
     ...
     "plugins": [{
-      "name": "typescript-strict-plugin"
+      "name": "${PLUGIN_NAME}"
     }]
   },
 }
