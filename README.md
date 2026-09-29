@@ -2,6 +2,15 @@
 
 Typescript plugin that allows turning on strict mode in specific files or directories.
 
+> **Fork notice.** This is a fork of
+> [`typescript-strict-plugin`](https://github.com/allegro/typescript-strict-plugin) by Allegro,
+> published on npm as **`typescript7-strict-plugin`**. It adds TypeScript 7 (native/Go compiler)
+> support and resolves the `extends` chain when looking up the plugin configuration.
+>
+> **It only supports Angular projects.** The CLI discovers which files to check by running
+> `tsc -p ./tsconfig.app.json` and `tsc -p ./tsconfig.spec.json`, both Angular CLI conventions. On a
+> project that does not have those two files, the CLI will fail.
+
 ## Do I need this plugin?
 
 `typescript-strict-plugin` was created mainly for existing projects that want to incorporate
@@ -21,17 +30,40 @@ files. Therefore, we have strict errors inside our files and during build time.
 
 ## How to install
 
+The package is published as `typescript7-strict-plugin`, but it has to be installed **under the
+`typescript-strict-plugin` alias**. TypeScript resolves language service plugins by module name, and
+the CLI looks itself up under that same name, so the folder in `node_modules` has to match it.
+
 Use `npm`:
 
 ```bash
-npm i --save-dev typescript-strict-plugin
+npm i --save-dev typescript-strict-plugin@npm:typescript7-strict-plugin
 ```
 
 or yarn
 
 ```bash
-yarn add -D typescript-strict-plugin
+yarn add -D typescript-strict-plugin@npm:typescript7-strict-plugin
 ```
+
+or pnpm
+
+```bash
+pnpm add -D typescript-strict-plugin@npm:typescript7-strict-plugin
+```
+
+Either way, your `package.json` ends up with:
+
+```json
+{
+  "devDependencies": {
+    "typescript-strict-plugin": "npm:typescript7-strict-plugin@^1.0.0"
+  }
+}
+```
+
+The alias is what makes this fork a drop-in replacement: a project already using Allegro's plugin
+switches over without touching its `tsconfig.json`.
 
 add plugin to your `tsconfig.json`:
 
@@ -60,11 +92,11 @@ comment. To make these files strict too, just remove its' ignore comments.
 
 ## Configuration
 
-Plugin takes extra, non-mandatory arguments `paths`, `exclude` and `excludePattern`. Args `paths` and
-`exclude` accept an array of relative or absolute paths that should be included (property `paths`)
-or excluded (property `exclude`). Arg `excludePattern` accepts an array of strings that will be
-matched with [minimatch](https://github.com/isaacs/minimatch). To add strict mode to files from
-ignored paths you can insert `//@ts-strict` comment.
+Plugin takes extra, non-mandatory arguments `paths`, `exclude` and `excludePattern`. Args `paths`
+and `exclude` accept an array of relative or absolute paths that should be included (property
+`paths`) or excluded (property `exclude`). Arg `excludePattern` accepts an array of strings that
+will be matched with [minimatch](https://github.com/isaacs/minimatch). To add strict mode to files
+from ignored paths you can insert `//@ts-strict` comment.
 
 ```json
 {
@@ -99,18 +131,32 @@ To add cli tool to your build time you can add a script to scripts list in packa
 {
   "scripts": {
     ...,
-    "typecheck": "tsc && tsc-strict",
+    "tsc-strict": "tsc-strict -p tsconfig.app.json",
   },
 }
 ```
 
+**Always pass `-p`.** In an Angular workspace the root `tsconfig.json` is solution-style: it holds
+`"files": []` plus `references`, and `tsc` does not follow references without `--build`. Run bare,
+the checker builds an empty program and cheerfully reports that every file passed, whatever the
+state of your code. Pointing it at `tsconfig.app.json` is what makes it check anything at all.
+
 Then you can simply run
 
 ```shell
-yarn tsc-strict
+npm run tsc-strict
 ```
 
 All your strict files should be checked from command line.
+
+Spec files are already part of the file list, since the CLI reads `tsconfig.spec.json` as well, but
+errors located inside them are only reported when you also run the checker against that project:
+
+```shell
+tsc-strict -p tsconfig.spec.json
+```
+
+Beware that chaining both with `&&` skips the second one as soon as the first reports an error.
 
 You can also pass some `tsc` arguments to the `tsc-strict` to override default compiler options e.g.
 
