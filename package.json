@@ -1,11 +1,11 @@
 {
-  "name": "typescript-strict-plugin",
+  "name": "typescript7-strict-plugin",
   "version": "1.0.0",
-  "description": "Typescript tools that help with migration to the strict mode",
+  "description": "Fork of typescript-strict-plugin with TypeScript 7 support",
   "author": "Allegro",
   "contributors": [
-    "Jaroslaw Glegola",
-    "Kamil Krysiak",
+    "Jaroslaw Glegola <jaroslaw.glegola@allegro.pl>",
+    "Kamil Krysiak <kamil.krysiak@allegro.pl>",
     "Leroy Cedric"
   ],
   "keywords": [
@@ -14,11 +14,11 @@
     "TypeScript Language Service"
   ],
   "bugs": {
-    "url": "https://github.com/lshem/typescript-strict-plugin/issues"
+    "url": "https://github.com/shemhazai/typescript7-strict-plugin/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lshem/typescript-strict-plugin.git"
+    "url": "git+https://github.com/shemhazai/typescript7-strict-plugin.git"
   },
   "license": "MIT",
   "bin": {
@@ -36,6 +36,7 @@
     "prettier": "prettier --loglevel error --write .",
     "prettier:ci": "prettier --check .",
     "build": "tsc",
+    "prepare": "npm run build",
     "dev": "tsc --watch -p ."
   },
   "jest": {
@@ -89,5 +90,5 @@
       "pre-commit": "lint-staged"
     }
   },
-  "homepage": "https://github.com/lshem/typescript-strict-plugin#readme"
+  "homepage": "https://github.com/shemhazai/typescript7-strict-plugin#readme"
 }
